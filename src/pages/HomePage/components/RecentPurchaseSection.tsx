@@ -3,7 +3,8 @@ import { Spacing, Text } from '@/ui-lib';
 import { useCurrencyContext } from '@/providers/CurrencyProvider';
 import { useRecentProductList } from '@/lib/api/products';
 import { useExchangeRate } from '@/lib/api/common';
-import { convertCurrencyPrice, formatCurrencyPrice } from '@/utils/calculate';
+import { convertCurrencyPrice } from '@/utils/calculate';
+import { formatCurrencyPrice } from '@/utils/format';
 
 function RecentPurchaseSection() {
   const { currency } = useCurrencyContext();
