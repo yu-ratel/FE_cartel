@@ -13,10 +13,17 @@ export const useExchangeRate = () => {
 };
 
 export const useGradePointList = () => {
-  const { data: gradePointList } = useQuery({
+  return useQuery({
     queryKey: ['gradePointList'],
-    queryFn: getGradePointList,
+    queryFn: async () => {
+      await new Promise(res => setTimeout(res, 3000000));
+      return getGradePointList();
+    },
+    initialData: [
+      {
+        type: 'EXPLORER',
+        minPoint: 0,
+      },
+    ],
   });
-
-  return gradePointList;
 };
