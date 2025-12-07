@@ -2,12 +2,14 @@ import { getExchangeRate, getGradePointList } from './common.api';
 import { useQuery } from '@tanstack/react-query';
 
 export const useExchangeRate = () => {
-  const { data: exchangeRate } = useQuery({
+  return useQuery({
     queryKey: ['exchangeRate'],
     queryFn: getExchangeRate,
+    initialData: {
+      KRW: 1,
+      USD: 1,
+    },
   });
-
-  return exchangeRate;
 };
 
 export const useGradePointList = () => {

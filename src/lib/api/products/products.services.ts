@@ -2,10 +2,9 @@ import { getRecentProductList } from './products.api';
 import { useQuery } from '@tanstack/react-query';
 
 export const useRecentProductList = () => {
-  const { data: recentProducts } = useQuery({
+  return useQuery({
     queryKey: ['recentProductList'],
     queryFn: getRecentProductList,
+    initialData: [],
   });
-
-  return recentProducts;
 };
