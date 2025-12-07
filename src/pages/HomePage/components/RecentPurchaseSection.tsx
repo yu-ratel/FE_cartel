@@ -1,5 +1,5 @@
 import { Box, Flex, styled } from 'styled-system/jsx';
-import { Spacing, Text } from '@/ui-lib';
+import { AsyncBoundary, Spacing, Text } from '@/ui-lib';
 import { useCurrencyContext } from '@/providers/CurrencyProvider';
 import { useRecentProductList } from '@/lib/api/products';
 import { useExchangeRate } from '@/lib/api/common';
@@ -13,17 +13,6 @@ function RecentPurchaseSection() {
   const exchangeRate = useExchangeRate();
   const isLoading = recentProducts.isFetching || exchangeRate.isFetching;
   const isError = recentProducts.isError || exchangeRate.isError;
-
-  if (isError) {
-    return (
-      <ErrorSection
-        onRetry={() => {
-          recentProducts.refetch();
-          exchangeRate.refetch();
-        }}
-      />
-    );
-  }
 
   return (
     <styled.section css={{ px: 5, pt: 4, pb: 8 }}>
@@ -41,10 +30,20 @@ function RecentPurchaseSection() {
         }}
         direction={'column'}
       >
-        {isLoading ? (
-          <RecentPurchaseSectionSkeleton />
-        ) : (
-          recentProducts.data.map(product => (
+        <AsyncBoundary
+          isLoading={isLoading}
+          isError={isError}
+          loadingFallback={<RecentPurchaseSectionSkeleton />}
+          errorFallback={
+            <ErrorSection
+              onRetry={() => {
+                recentProducts.refetch();
+                exchangeRate.refetch();
+              }}
+            />
+          }
+        >
+          {recentProducts.data.map(product => (
             <Flex key={product.id} css={{ gap: 4 }}>
               <styled.img
                 src={product.thumbnail}
@@ -63,8 +62,8 @@ function RecentPurchaseSection() {
                 </Text>
               </Flex>
             </Flex>
-          ))
-        )}
+          ))}
+        </AsyncBoundary>
       </Flex>
     </styled.section>
   );
