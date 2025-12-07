@@ -3,10 +3,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Grid, styled } from 'styled-system/jsx';
 import ProductItem from '../components/ProductItem';
+import { useProductList } from '@/lib/api/products';
+import type { Product } from '@/lib/types/products';
 
 function ProductListSection() {
   const [currentTab, setCurrentTab] = useState('all');
   const navigate = useNavigate();
+  const productList = useProductList();
 
   const handleClickProduct = (productId: number) => {
     navigate(`/product/${productId}`);
@@ -26,58 +29,42 @@ function ProductListSection() {
         </SubGNB.List>
       </SubGNB.Root>
       <Grid gridTemplateColumns="repeat(2, 1fr)" rowGap={9} columnGap={4} p={5}>
-        <ProductItem.Root onClick={() => handleClickProduct(1)}>
-          <ProductItem.Image src="/moon-cheese-images/cheese-1-1.jpg" alt="월레스의 오리지널 웬슬리데일" />
-          <ProductItem.Info title="월레스의 오리지널 웬슬리데일" description="월레스가 아침마다 찾는 바로 그 치즈!" />
-          <ProductItem.Meta>
-            <ProductItem.MetaLeft>
-              <ProductItem.Rating rating={4} />
-              <ProductItem.Price>$12.99</ProductItem.Price>
-            </ProductItem.MetaLeft>
-          </ProductItem.Meta>
-          <Counter.Root>
-            <Counter.Minus onClick={() => {}} disabled={true} />
-            <Counter.Display value={3} />
-            <Counter.Plus onClick={() => {}} />
-          </Counter.Root>
-        </ProductItem.Root>
-
-        <ProductItem.Root onClick={() => handleClickProduct(2)}>
-          <ProductItem.Image src="/moon-cheese-images/cracker-1-1.jpg" alt="로봇 크런치 비스킷" />
-          <ProductItem.Info title="로봇 크런치 비스킷" description="로봇 캐릭터 모양의 귀리 비스킷" />
-          <ProductItem.Meta>
-            <ProductItem.MetaLeft>
-              <ProductItem.Rating rating={3} />
-              <ProductItem.Price>5.00</ProductItem.Price>
-            </ProductItem.MetaLeft>
-            <ProductItem.FreeTag type="gluten" />
-          </ProductItem.Meta>
-          <Counter.Root>
-            <Counter.Minus onClick={() => {}} disabled={true} />
-            <Counter.Display value={3} />
-            <Counter.Plus onClick={() => {}} />
-          </Counter.Root>
-        </ProductItem.Root>
-
-        <ProductItem.Root onClick={() => handleClickProduct(3)}>
-          <ProductItem.Image src="/moon-cheese-images/tea-1-1.jpg" alt="문라이트 카모마일 티" />
-          <ProductItem.Info title="문라이트 카모마일 티" description="달빛 같은 부드러운 허브차" />
-          <ProductItem.Meta>
-            <ProductItem.MetaLeft>
-              <ProductItem.Rating rating={5} />
-              <ProductItem.Price>$7.00</ProductItem.Price>
-            </ProductItem.MetaLeft>
-            <ProductItem.FreeTag type="caffeine" />
-          </ProductItem.Meta>
-          <Counter.Root>
-            <Counter.Minus onClick={() => {}} disabled={true} />
-            <Counter.Display value={3} />
-            <Counter.Plus onClick={() => {}} />
-          </Counter.Root>
-        </ProductItem.Root>
+        {productList.data.map(product => (
+          <ProductItem.Root key={product.id} onClick={() => handleClickProduct(product.id)}>
+            <ProductItem.Image src={product.images[0]} alt={product.name} />
+            <ProductItem.Info title={product.name} description={product.description} />
+            <ProductItem.Meta>
+              <ProductItem.MetaLeft>
+                <ProductItem.Rating rating={product.rating} />
+                <ProductItem.Price>{product.price}</ProductItem.Price>
+              </ProductItem.MetaLeft>
+              <ProductItemFreeTag product={product} />
+            </ProductItem.Meta>
+            <Counter.Root>
+              <Counter.Minus onClick={() => {}} disabled={true} />
+              <Counter.Display value={product.stock} />
+              <Counter.Plus onClick={() => {}} />
+            </Counter.Root>
+          </ProductItem.Root>
+        ))}
       </Grid>
     </styled.section>
   );
 }
 
 export default ProductListSection;
+
+function ProductItemFreeTag({ product }: { product: Product }) {
+  const category = product.category;
+
+  switch (category) {
+    case 'CHEESE':
+      return;
+    case 'CRACKER':
+      return product.isGlutenFree && <ProductItem.FreeTag type="gluten" />;
+    case 'TEA':
+      return product.isCaffeineFree && <ProductItem.FreeTag type="caffeine" />;
+    default:
+      category satisfies never;
+  }
+}
