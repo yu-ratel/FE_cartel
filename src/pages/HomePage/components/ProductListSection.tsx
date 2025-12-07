@@ -9,6 +9,7 @@ import type { Product } from '@/lib/types/products';
 import { useCurrencyContext } from '@/providers/CurrencyProvider';
 import { convertCurrencyPrice } from '@/utils/calculate';
 import { formatCurrencyPrice } from '@/utils/format';
+import { useShoppingCartController } from '@/hooks/useShoppingCart';
 
 function ProductListSection() {
   const [currentTab, setCurrentTab] = useState('all');
@@ -16,6 +17,7 @@ function ProductListSection() {
   const productList = useProductList();
   const { currency } = useCurrencyContext();
   const exchangeRate = useExchangeRate();
+  const { addItem, removeItem, readItemCount, isItemMoreThanStock, isItemLessThanStock } = useShoppingCartController();
 
   const handleClickProduct = (productId: number) => {
     navigate(`/product/${productId}`);
@@ -49,9 +51,9 @@ function ProductListSection() {
               <ProductItemFreeTag product={product} />
             </ProductItem.Meta>
             <Counter.Root>
-              <Counter.Minus onClick={() => {}} disabled={true} />
-              <Counter.Display value={product.stock} />
-              <Counter.Plus onClick={() => {}} />
+              <Counter.Minus onClick={() => removeItem(product.id)} disabled={isItemLessThanStock(product)} />
+              <Counter.Display value={readItemCount(product)} />
+              <Counter.Plus onClick={() => addItem(product)} disabled={isItemMoreThanStock(product)} />
             </Counter.Root>
           </ProductItem.Root>
         ))}
