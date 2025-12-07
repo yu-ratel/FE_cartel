@@ -23,6 +23,14 @@ function ProductListSection() {
     navigate(`/product/${productId}`);
   };
 
+  const productListWithTab = (currentTab: string) => {
+    if (currentTab === 'all') {
+      return productList.data;
+    }
+
+    return productList.data.filter(product => product.category === currentTab.toUpperCase());
+  };
+
   return (
     <styled.section bg="background.01_white">
       <Box css={{ px: 5, pt: 5, pb: 4 }}>
@@ -37,7 +45,7 @@ function ProductListSection() {
         </SubGNB.List>
       </SubGNB.Root>
       <Grid gridTemplateColumns="repeat(2, 1fr)" rowGap={9} columnGap={4} p={5}>
-        {productList.data.map(product => (
+        {productListWithTab(currentTab).map(product => (
           <ProductItem.Root key={product.id} onClick={() => handleClickProduct(product.id)}>
             <ProductItem.Image src={product.images[0]} alt={product.name} />
             <ProductItem.Info title={product.name} description={product.description} />
