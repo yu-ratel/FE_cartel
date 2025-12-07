@@ -4,12 +4,18 @@ import { useNavigate } from 'react-router';
 import { Box, Grid, styled } from 'styled-system/jsx';
 import ProductItem from '../components/ProductItem';
 import { useProductList } from '@/lib/api/products';
+import { useExchangeRate } from '@/lib/api/common';
 import type { Product } from '@/lib/types/products';
+import { useCurrencyContext } from '@/providers/CurrencyProvider';
+import { convertCurrencyPrice } from '@/utils/calculate';
+import { formatCurrencyPrice } from '@/utils/format';
 
 function ProductListSection() {
   const [currentTab, setCurrentTab] = useState('all');
   const navigate = useNavigate();
   const productList = useProductList();
+  const { currency } = useCurrencyContext();
+  const exchangeRate = useExchangeRate();
 
   const handleClickProduct = (productId: number) => {
     navigate(`/product/${productId}`);
@@ -36,7 +42,9 @@ function ProductListSection() {
             <ProductItem.Meta>
               <ProductItem.MetaLeft>
                 <ProductItem.Rating rating={product.rating} />
-                <ProductItem.Price>{product.price}</ProductItem.Price>
+                <ProductItem.Price>
+                  {formatCurrencyPrice(convertCurrencyPrice(product.price, currency, exchangeRate.data), currency)}
+                </ProductItem.Price>
               </ProductItem.MetaLeft>
               <ProductItemFreeTag product={product} />
             </ProductItem.Meta>
