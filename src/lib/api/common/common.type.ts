@@ -1,4 +1,4 @@
-import type { CurrencyType, GradeType } from '@/lib/types';
+import type { CurrencyType, GradePointListItem } from '@/lib/types';
 
 export type ExchangeRateResponse = {
   exchangeRate: {
@@ -7,8 +7,5 @@ export type ExchangeRateResponse = {
 };
 
 export type GradePointListResponse = {
-  gradePointList: Array<{
-    type: GradeType;
-    minPoint: number;
-  }>;
+  gradePointList: GradePointListItem[];
 };

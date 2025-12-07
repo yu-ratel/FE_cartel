@@ -1,5 +1,6 @@
 import { getExchangeRate, getGradePointList } from './common.api';
 import { useQuery } from '@tanstack/react-query';
+import type { GradeType } from '@/lib/types';
 
 export const useExchangeRate = () => {
   return useQuery({
@@ -15,13 +16,10 @@ export const useExchangeRate = () => {
 export const useGradePointList = () => {
   return useQuery({
     queryKey: ['gradePointList'],
-    queryFn: async () => {
-      await new Promise(res => setTimeout(res, 3000000));
-      return getGradePointList();
-    },
+    queryFn: getGradePointList,
     initialData: [
       {
-        type: 'EXPLORER',
+        type: 'EXPLORER' as GradeType,
         minPoint: 0,
       },
     ],

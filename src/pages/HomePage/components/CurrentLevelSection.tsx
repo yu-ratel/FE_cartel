@@ -3,12 +3,17 @@ import { AsyncBoundary, ProgressBar, Spacing, Text } from '@/ui-lib';
 import { useUserInfo } from '@/lib/api/user';
 import { useGradePointList } from '@/lib/api/common';
 import ErrorSection from '@/components/ErrorSection';
+import { formatGrade } from '@/utils/format';
+import { pointsToNextGrade, calculateGradeProgress } from '@/utils/calculate';
 
 function CurrentLevelSection() {
   const userInfo = useUserInfo();
   const gradePointList = useGradePointList();
   const isLoading = userInfo.isFetching || gradePointList.isFetching;
   const isError = userInfo.isError || gradePointList.isError;
+  const { grade: currentGrade, point: currentPoint } = userInfo.data;
+  const gradeProgress = calculateGradeProgress(currentPoint, gradePointList.data);
+  const nextGradePoint = pointsToNextGrade(currentPoint, gradePointList.data);
 
   return (
     <styled.section css={{ px: 5, py: 4 }}>
@@ -31,21 +36,21 @@ function CurrentLevelSection() {
           }
         >
           <Flex flexDir="column" gap={2}>
-            <Text variant="H2_Bold">Explorer</Text>
+            <Text variant="H2_Bold">{formatGrade(currentGrade)}</Text>
 
-            <ProgressBar value={0.6} size="xs" />
+            <ProgressBar value={gradeProgress} size="xs" />
 
             <Flex justifyContent="space-between">
               <Box textAlign="left">
                 <Text variant="C1_Bold">현재 포인트</Text>
                 <Text variant="C2_Regular" color="neutral.03_gray">
-                  6p
+                  {currentPoint}p
                 </Text>
               </Box>
               <Box textAlign="right">
                 <Text variant="C1_Bold">다음 등급까지</Text>
                 <Text variant="C2_Regular" color="neutral.03_gray">
-                  1.5p
+                  {nextGradePoint}p
                 </Text>
               </Box>
             </Flex>

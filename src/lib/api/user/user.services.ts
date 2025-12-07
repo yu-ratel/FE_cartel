@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getUserInfo } from './user.api';
+import type { GradeType } from '@/lib/types';
 
 export const useUserInfo = () => {
   return useQuery({
@@ -7,7 +8,7 @@ export const useUserInfo = () => {
     queryFn: getUserInfo,
     initialData: {
       point: 0,
-      grade: 'EXPLORER',
+      grade: 'EXPLORER' as GradeType,
     },
   });
 };
