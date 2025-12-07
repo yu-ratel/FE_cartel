@@ -1,5 +1,9 @@
-import type { ProductType } from '@/lib/types';
+import type { RecentProduct, Product } from '@/lib/types/products';
+
+export type RecentProductListResponse = {
+  recentProducts: RecentProduct[];
+};
 
 export type ProductListResponse = {
-  recentProducts: ProductType[];
+  products: Product[];
 };
