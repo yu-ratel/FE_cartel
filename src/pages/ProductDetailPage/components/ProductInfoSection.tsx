@@ -6,7 +6,7 @@ type ProductInfoSectionProps = {
   name: string;
   category: TagType;
   rating: number;
-  price: number;
+  price: string;
   quantity: number;
 };
 
@@ -21,7 +21,7 @@ function ProductInfoSection({ name, category, rating, price, quantity }: Product
           <RatingGroup value={rating} readOnly label={`${rating.toFixed(1)}`} />
         </Stack>
         <Spacing size={4} />
-        <Text variant="H1_Bold">${price.toFixed(2)}</Text>
+        <Text variant="H1_Bold">{price}</Text>
       </Box>
 
       <Spacing size={5} />

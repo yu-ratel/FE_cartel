@@ -1,4 +1,4 @@
-import { getRecentProductList, getProductList } from './products.api';
+import { getRecentProductList, getProductList, getProductDetail } from './products.api';
 import { useQuery } from '@tanstack/react-query';
 
 export const useRecentProductList = () => {
@@ -14,5 +14,23 @@ export const useProductList = () => {
     queryKey: ['productList'],
     queryFn: getProductList,
     initialData: [],
+  });
+};
+
+export const useProductDetail = (id: number) => {
+  return useQuery({
+    queryKey: ['productDetail', id],
+    queryFn: () => getProductDetail(id),
+    initialData: {
+      id: 0,
+      name: '',
+      category: 'CHEESE',
+      stock: 0,
+      price: 0,
+      description: '',
+      detailDescription: '',
+      images: [],
+      rating: 0,
+    },
   });
 };
