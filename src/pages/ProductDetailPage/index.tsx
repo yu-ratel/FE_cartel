@@ -6,11 +6,6 @@ import ThumbnailSection from './components/ThumbnailSection';
 import { AsyncBoundary } from '@/ui-lib/components/AsyncBoundary';
 import { useParams } from 'react-router';
 import { useProductDetail } from '@/lib/api/products/products.services';
-import type { TagType } from '@/ui-lib/components/tag';
-import { useCurrencyContext } from '@/providers/CurrencyProvider';
-import { convertCurrencyPrice } from '@/utils/calculate';
-import { useExchangeRate } from '@/lib/api/common';
-import { formatCurrencyPrice } from '@/utils/format';
 
 // 4. 상품의 상황에 따라 장바구니 버튼에 아래 내용을 출력해주세요.
 //     1. 장바구니에 같은 상품이 없을 경우: “장바구니 담기”
@@ -28,10 +23,8 @@ import { formatCurrencyPrice } from '@/utils/format';
 
 function ProductDetailPage() {
   const { id } = useParams();
-  const { currency } = useCurrencyContext();
   const productDetail = useProductDetail(Number(id));
-  const exchangeRate = useExchangeRate();
-  const { name, category, rating, price, stock, description, detailDescription, images } = productDetail.data;
+  const { description, detailDescription, images } = productDetail.data;
   const isLoading = productDetail.isFetching;
   const isError = productDetail.isError;
 
@@ -51,13 +44,7 @@ function ProductDetailPage() {
         errorFallback={<div>Error...</div>}
       >
         <ThumbnailSection images={images} />
-        <ProductInfoSection
-          name={name}
-          category={category.toLowerCase() as TagType}
-          rating={rating}
-          price={formatCurrencyPrice(convertCurrencyPrice(price, currency, exchangeRate.data), currency)}
-          quantity={stock}
-        />
+        <ProductInfoSection product={productDetail.data} />
 
         <Spacing size={2.5} />
 
