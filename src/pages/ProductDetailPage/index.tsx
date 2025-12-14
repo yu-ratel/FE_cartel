@@ -7,13 +7,8 @@ import { AsyncBoundary } from '@/ui-lib/components/AsyncBoundary';
 import { useParams } from 'react-router';
 import { useProductDetail } from '@/lib/api/products/products.services';
 
-// 7. 상품에 맞는 추천 제품을 노출해주세요.
-//     1. `추천 상품 아이디 목록`을 서버에서 불러와주세요.
-//     2. 불러온 아이디와 같은 `상품목록 정보` 를 노출해주세요.
-// 8. 서버에 문제가 있을경우 에러화면을 노출해주세요.
-
 function ProductDetailPage() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const productDetail = useProductDetail(Number(id));
   const { description, detailDescription, images } = productDetail.data;
   const isLoading = productDetail.isFetching;

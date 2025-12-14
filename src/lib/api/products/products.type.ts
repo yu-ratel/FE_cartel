@@ -7,3 +7,7 @@ export type RecentProductListResponse = {
 export type ProductListResponse = {
   products: Product[];
 };
+
+export type RecommendedProductListResponse = {
+  recommendProductIds: number[];
+};
