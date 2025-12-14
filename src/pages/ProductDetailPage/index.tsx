@@ -14,6 +14,8 @@ function ProductDetailPage() {
   const isLoading = productDetail.isFetching;
   const isError = productDetail.isError;
 
+  // TODO:  상품 상세, 추천 목록 스켈레톤 및 에러처리 필요 ( 12.15 ) 전체적인 로직 점검
+
   // 아쉬운점 -> currency 와 환율이 같은공간에서 관리하는게 좋을듯
   // 현재 환율은 컴포넌트 내부에서 관리하고 있지만, currency는 전역적으로 관리하고 있음
   // 이렇게 되면 환율이 변경될 때마다 컴포넌트를 리렌더링 해야 함
