@@ -17,11 +17,11 @@ import { convertCurrencyPrice } from '@/utils/calculate';
 
 function RecommendationSection() {
   const { id } = useParams<{ id: string }>();
-  const exchangeRate = useExchangeRate();
-  const { currency } = useCurrencyContext();
   const recommendedProductList = useRecommendedProductList(Number(id));
   const recommendedProductDetailArray = useRecommendedProductDetails(recommendedProductList.data);
-  const recommendedProducts = recommendedProductDetailArray.map(detail => detail.data) as Product[];
+  const recommendedProducts = recommendedProductDetailArray.map(detail => detail.data).filter(Boolean) as Product[];
+  const exchangeRate = useExchangeRate();
+  const { currency } = useCurrencyContext();
 
   const isLoading =
     recommendedProductList.isFetching || recommendedProductDetailArray.some(detail => detail.isFetching);
