@@ -6,20 +6,26 @@ import { useRecommendedProductList, useRecommendedProductDetails } from '@/lib/a
 import { AsyncBoundary } from '@/ui-lib/components/AsyncBoundary';
 import ErrorSection from '@/components/ErrorSection';
 import type { Product } from '@/lib/types/products';
+import { formatCurrencyPrice } from '@/utils/format';
+import { useCurrencyContext } from '@/providers/CurrencyProvider';
+import { useExchangeRate } from '@/lib/api/common';
+import { convertCurrencyPrice } from '@/utils/calculate';
 
 // 아쉬운점
-// queries 를 사용하고 있지만 suspense 를 사용하고 있지 않음
-// 현재는 시간이 ?
+// queries 를 사용하고 있지만 suspense 를 로딩과 사용하고 있지 않음
 // 로직이 전체적으로 너무 더러움
 
 function RecommendationSection() {
   const { id } = useParams<{ id: string }>();
+  const exchangeRate = useExchangeRate();
+  const { currency } = useCurrencyContext();
   const recommendedProductList = useRecommendedProductList(Number(id));
-  const recommendedProductDetails = useRecommendedProductDetails(recommendedProductList.data);
-  const recommendedProducts = recommendedProductDetails.map(detail => detail.data).filter(Boolean) as Product[];
+  const recommendedProductDetailArray = useRecommendedProductDetails(recommendedProductList.data);
+  const recommendedProducts = recommendedProductDetailArray.map(detail => detail.data) as Product[];
 
-  const isLoading = recommendedProductList.isFetching || recommendedProductDetails.some(detail => detail.isFetching);
-  const isError = recommendedProductList.isError || recommendedProductDetails.some(detail => detail.isError);
+  const isLoading =
+    recommendedProductList.isFetching || recommendedProductDetailArray.some(detail => detail.isFetching);
+  const isError = recommendedProductList.isError || recommendedProductDetailArray.some(detail => detail.isError);
   const navigate = useNavigate();
 
   const handleClickProduct = (productId: number) => {
@@ -41,7 +47,7 @@ function RecommendationSection() {
             <ErrorSection
               onRetry={() => {
                 recommendedProductList.refetch();
-                recommendedProductDetails.forEach(detail => detail.refetch());
+                recommendedProductDetailArray.forEach(detail => detail.refetch());
               }}
             />
           }
@@ -52,7 +58,9 @@ function RecommendationSection() {
                 <RecommendationProductItem.Root onClick={() => handleClickProduct(product.id)}>
                   <RecommendationProductItem.Image src={product.images[0]} alt={product.name} />
                   <RecommendationProductItem.Info name={product.name} rating={product.rating} />
-                  <RecommendationProductItem.Price>{product.price}</RecommendationProductItem.Price>
+                  <RecommendationProductItem.Price>
+                    {formatCurrencyPrice(convertCurrencyPrice(product.price, currency, exchangeRate.data), currency)}
+                  </RecommendationProductItem.Price>
                 </RecommendationProductItem.Root>
               </styled.section>
             );

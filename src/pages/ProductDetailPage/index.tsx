@@ -6,6 +6,7 @@ import ThumbnailSection from './components/ThumbnailSection';
 import { AsyncBoundary } from '@/ui-lib/components/AsyncBoundary';
 import { useParams } from 'react-router';
 import { useProductDetail } from '@/lib/api/products/products.services';
+import ErrorSection from '@/components/ErrorSection';
 
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -28,8 +29,14 @@ function ProductDetailPage() {
       <AsyncBoundary
         isLoading={isLoading}
         isError={isError}
-        loadingFallback={<div>Loading...</div>}
-        errorFallback={<div>Error...</div>}
+        loadingFallback={<ProductDetailPageSkeleton />}
+        errorFallback={
+          <ErrorSection
+            onRetry={() => {
+              productDetail.refetch();
+            }}
+          />
+        }
       >
         <ThumbnailSection images={images} />
         <ProductInfoSection product={productDetail.data} />
@@ -46,3 +53,11 @@ function ProductDetailPage() {
 }
 
 export default ProductDetailPage;
+
+const ProductDetailPageSkeleton = () => {
+  return (
+    <div>
+      <div>Loading...</div>
+    </div>
+  );
+};
