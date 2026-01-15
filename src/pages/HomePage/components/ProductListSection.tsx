@@ -18,7 +18,8 @@ function ProductListSection() {
   const productList = useProductList();
   const { currency } = useCurrencyContext();
   const exchangeRate = useExchangeRate();
-  const { addItem, removeItem, readItemCount, isItemMoreThanStock, isItemLessThanStock } = useShoppingCartController();
+  const { addItem, removeItem, readItemQuantity, isItemMoreThanStock, isItemLessThanStock } =
+    useShoppingCartController();
   const isLoading = productList.isFetching || exchangeRate.isFetching;
   const isError = productList.isError || exchangeRate.isError;
 
@@ -76,7 +77,7 @@ function ProductListSection() {
               </ProductItem.Meta>
               <Counter.Root>
                 <Counter.Minus onClick={() => removeItem(product.id)} disabled={isItemLessThanStock(product)} />
-                <Counter.Display value={readItemCount(product)} />
+                <Counter.Display value={readItemQuantity(product)} />
                 <Counter.Plus onClick={() => addItem(product)} disabled={isItemMoreThanStock(product)} />
               </Counter.Root>
             </ProductItem.Root>
